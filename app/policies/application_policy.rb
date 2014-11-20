@@ -5,10 +5,6 @@ class ApplicationPolicy
     @record = record
   end
 
-  %w[index new create edit update destroy].each do |action|
-    define_method(action){false}
-  end
-
   def self.allow(actions, &condition)
     condition ||= ->{true}
     Array(actions).each do |action|
@@ -16,4 +12,9 @@ class ApplicationPolicy
     end
   end
 
+  def self.disallow(actions)
+    allow(actions){false}
+  end
+
+  disallow %w[index show new create edit update destroy]
 end

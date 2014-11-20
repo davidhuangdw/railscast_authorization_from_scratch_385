@@ -1,28 +1,55 @@
-== README
+### authorization from scratch: pudit way
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+        # specific policy:
+        class TopicPolicy < ApplicationPolicy
+          allow %w{index show}
 
-Things you may want to cover:
+          allow :new do
+            user.present?
+          end
 
-* Ruby version
-
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+          allow %w{create edit update destroy} do
+            user && (user.admin? || user == record.try(:user))
+          end
+        end
 
 
-Please feel free to use a different markup language if you do not plan to run
-<tt>rake doc:app</tt>.
+        # application_policy.rb
+        class ApplicationPolicy
+          attr_reader :user, :record
+          def initialize(user,record)
+            @user = user
+            @record = record
+          end
+
+          def self.allow(actions, &condition)
+            condition ||= ->{true}
+            Array(actions).each do |action|
+              define_method(action,&condition)
+            end
+          end
+          def self.disallow(actions)
+            allow(actions){false}
+          end
+
+          disallow %w[index show new create edit update destroy]
+        end
+
+
+        # application_controller.rb
+          helper_method :allow
+          def policy_class(model=nil)
+            model ||= params[:controller].singularize
+            (model.to_s.camelize + 'Policy').constantize
+          end
+          def allow(record, query)
+            policy_class(record.try(:class)).new(current_user,record).send(query)
+          end
+          def authorize(record, query=params[:action])
+            redirect_to root_url, notice:'Not authorize' unless allow(record, query)
+          end
+
+        1. polimorphic service object -- XXXPolicy
+        2. controller's allow()/authorize(): pass context to Policy object
+          * factory: use record.class or params[:controller] to choose Policy
+          * passed context: current_user, record, action

@@ -34,7 +34,7 @@ class TopicsController < ApplicationController
   # POST /topics
   # POST /topics.json
   def create
-    @topic = Topic.new(topic_params)
+    @topic = current_user.topics.build(topic_params)
 
     respond_to do |format|
       if @topic.save
@@ -78,11 +78,11 @@ class TopicsController < ApplicationController
     end
   def set_topic_and_authorize
     set_topic
-    authorize @topic
+
   end
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def topic_params
-      params.require(:topic).permit(:name, :sticky, :user_id)
+      params.require(:topic).permit(:name, :sticky)
     end
 end

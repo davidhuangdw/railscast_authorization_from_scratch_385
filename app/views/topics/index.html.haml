@@ -20,9 +20,9 @@
       - @topics.each do |topic|
         - if allow(topic, :show)
           %tr
-            %td= topic.name
+            %td=link_to topic.name, topic
             %td= topic.sticky
-            %td= topic.user
+            %td= topic.user.try(:email)
             %td= link_to 'Show', topic
             %td= link_to_if allow(topic, :edit), 'Edit', edit_topic_path(topic)
             %td= link_to_if allow(topic, :destroy), 'Destroy', topic, :data => { confirm: 'Are you sure?' }, :method => :delete
