@@ -1,7 +1,8 @@
 .page-header
-  = link_to new_topic_path, :class => 'btn btn-primary' do
-    %span.glyphicon.glyphicon-plus
-    New Topic
+  - if allow(Topic.new, :new)
+    = link_to new_topic_path, :class => 'btn btn-primary' do
+      %span.glyphicon.glyphicon-plus
+      New Topic
   %h1 Listing topics
 
 .table-responsive
@@ -17,10 +18,11 @@
 
     %tbody
       - @topics.each do |topic|
-        %tr
-          %td= topic.name
-          %td= topic.sticky
-          %td= topic.user
-          %td= link_to 'Show', topic
-          %td= link_to 'Edit', edit_topic_path(topic)
-          %td= link_to 'Destroy', topic, :data => { confirm: 'Are you sure?' }, :method => :delete
+        - if allow(topic, :show)
+          %tr
+            %td= topic.name
+            %td= topic.sticky
+            %td= topic.user
+            %td= link_to 'Show', topic
+            %td= link_to_if allow(topic, :edit), 'Edit', edit_topic_path(topic)
+            %td= link_to_if allow(topic, :destroy), 'Destroy', topic, :data => { confirm: 'Are you sure?' }, :method => :delete

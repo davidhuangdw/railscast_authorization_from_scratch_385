@@ -2,9 +2,14 @@
   = link_to topics_path, :class => 'btn btn-default' do
     %span.glyphicon.glyphicon-list-alt
     Back
-  = link_to edit_topic_path(@topic), :class => 'btn btn-primary' do
-    %span.glyphicon.glyphicon-pencil
-    Edit
+  - if allow(@topic, :edit)
+    = link_to edit_topic_path(@topic), :class => 'btn btn-primary' do
+      %span.glyphicon.glyphicon-pencil
+      Edit
+  - if allow(Post.new, :new)
+    = link_to new_topic_path, :class => 'btn btn-primary' do
+      %span.glyphicon.glyphicon-plus
+      New Post
   %h1= @topic.name
   %p by #{@topic.user.try(:name)}
 

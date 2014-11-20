@@ -1,5 +1,6 @@
 class TopicsController < ApplicationController
-  before_action :set_topic, only: [:show, :edit, :update, :destroy]
+  before_action :set_topic_and_authorize, only: [:show, :edit, :update, :destroy]
+  before_action :authorize_action, only: [:index, :new]
 
   # GET /topics
   # GET /topics.json
@@ -75,6 +76,10 @@ class TopicsController < ApplicationController
     def set_topic
       @topic = Topic.find(params[:id])
     end
+  def set_topic_and_authorize
+    set_topic
+    authorize @topic
+  end
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def topic_params

@@ -1,5 +1,6 @@
-%p
-  = link_to 'Show', post
-  = link_to 'Edit', edit_post_path(post)
-  = link_to 'Destroy', post, :data => { confirm: 'Are you sure?' }, :method => :delete
-%p= post.content
+- if allow(post, :show)
+  %p
+    = link_to_if allow(post, :show), 'Show', post
+    = link_to_if allow(post, :edit), 'Edit', edit_post_path(post)
+    = link_to_if allow(post, :destroy), 'Destroy', post, :data => { confirm: 'Are you sure?' }, :method => :delete
+  %p= post.content
