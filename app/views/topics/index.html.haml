@@ -1,0 +1,26 @@
+.page-header
+  = link_to new_topic_path, :class => 'btn btn-primary' do
+    %span.glyphicon.glyphicon-plus
+    New Topic
+  %h1 Listing topics
+
+.table-responsive
+  %table.table.table-striped.table-bordered.table-hover
+    %thead
+      %tr
+        %th Name
+        %th Sticky
+        %th User
+        %th
+        %th
+        %th
+
+    %tbody
+      - @topics.each do |topic|
+        %tr
+          %td= topic.name
+          %td= topic.sticky
+          %td= topic.user
+          %td= link_to 'Show', topic
+          %td= link_to 'Edit', edit_topic_path(topic)
+          %td= link_to 'Destroy', topic, :data => { confirm: 'Are you sure?' }, :method => :delete
