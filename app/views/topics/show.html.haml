@@ -5,12 +5,7 @@
   = link_to edit_topic_path(@topic), :class => 'btn btn-primary' do
     %span.glyphicon.glyphicon-pencil
     Edit
-  %h1 Show topic
+  %h1= @topic.name
+  %p by #{@topic.user.try(:name)}
 
-%dl.dl-horizontal
-  %dt Name:
-  %dd= @topic.name
-  %dt Sticky:
-  %dd= @topic.sticky
-  %dt User:
-  %dd= @topic.user
+= render @topic.posts
